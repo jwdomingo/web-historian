@@ -10,7 +10,31 @@ exports.headers = headers = {
   'Content-Type': "text/html"
 };
 
-exports.serveAssets = function(res, asset, callback) {
+exports.serveAssets = function(req, res, callback) {
+  // deal with index.html
+  if ( req.url === '/' ) {
+    fs.readFile(__dirname + '/public/index.html','utf-8', function(err, data) {
+      if (err) {
+        console.error(err);
+        res.writeHead(404, headers);
+      } else {
+        res.writeHead(200, 'ok', headers);
+        res.end(data);
+      }
+    });
+  }
+  if (req.url === '/styles.css') {
+    fs.readFile(__dirname + '/public/styles.css', function(err, data) {
+      if (err) {
+        console.error(err);
+        res.writeHead(404, headers);
+      } else {
+        headers['Content-Type'] = "text/css";
+        res.writeHead(200, 'ok', headers);
+        res.end(data);
+      }
+    });
+  }
   // Write some code here that helps serve up your static files!
   // (Static files are things like html (yours or archived from others...),
   // css, or anything that doesn't change often.)
