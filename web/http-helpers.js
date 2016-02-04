@@ -10,32 +10,14 @@ exports.headers = headers = {
   'Content-Type': "text/html"
 };
 
-exports.serveAssets = function(req, res, callback) {
-  if ( req.url === '/' ) {
-    fs.readFile(__dirname + '/public/index.html', function(err, data) {
+exports.serveAssets = function(res, asset, callback) {
+  if (asset.match(/public/) || asset.match(/\/archives\/sites\//)) {
+    fs.readFile(__dirname + asset, function(err, data) {
       if (err) {
         console.error(err);
         _sendResponse(res, null, 'File Not Found', 404);
       } else {
-        _sendResponse(res, req.url, data, 200);
-      }
-    });
-  } else if (req.url === '/styles.css') {
-    fs.readFile(__dirname + '/public/styles.css', function(err, data) {
-      if (err) {
-        console.error(err);
-        _sendResponse(res, null, 'File Not Found', 404);
-      } else {
-        _sendResponse(res, req.url, data, 200);
-      }
-    });
-  } else if (req.url === '/loading.html') {
-    fs.readFile(__dirname + '/public/loading.html', function(err, data) {
-      if (err) {
-        console.error(err);
-        _sendResponse(res, null, 'File Not Found', 404);
-      } else {
-        _sendResponse(res, req.url, data, 200);
+        _sendResponse(res, asset, data, 200);
       }
     });
   } else {
@@ -54,6 +36,7 @@ var _sendResponse = function(res, url, data, status) {
 };
 
 var _parseContentType = function(url) {
+  url = url || '';
   var fileExtension = url.substr(url.lastIndexOf('.') + 1);
   if (fileExtension === 'js') {
     return 'application/js';
@@ -66,4 +49,6 @@ var _parseContentType = function(url) {
   }
 };
 
-// As you progress, keep thinking about what helper functions you can put here!
+exports.parseURL = function(string) {
+  return string.slice(string.indexOf('=') + 1);
+};
