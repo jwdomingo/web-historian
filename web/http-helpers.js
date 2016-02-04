@@ -11,39 +11,59 @@ exports.headers = headers = {
 };
 
 exports.serveAssets = function(req, res, callback) {
-  // deal with index.html
   if ( req.url === '/' ) {
     fs.readFile(__dirname + '/public/index.html', function(err, data) {
       if (err) {
         console.error(err);
-        res.writeHead(404, headers);
-        res.end();
+        _sendResponse(res, null, 'File Not Found', 404);
       } else {
-        headers['Content-Type'] = "text/html";
-        res.writeHead(200, headers);
-        res.end(data);
+        _sendResponse(res, req.url, data, 200);
       }
     });
   } else if (req.url === '/styles.css') {
     fs.readFile(__dirname + '/public/styles.css', function(err, data) {
       if (err) {
-        res.writeHead(404, headers);
-        res.end();
+        console.error(err);
+        _sendResponse(res, null, 'File Not Found', 404);
       } else {
-        headers['Content-Type'] = "text/css";
-        res.writeHead(200, 'ok', headers);
-        res.end(data);
+        _sendResponse(res, req.url, data, 200);
+      }
+    });
+  } else if (req.url === '/loading.html') {
+    fs.readFile(__dirname + '/public/loading.html', function(err, data) {
+      if (err) {
+        console.error(err);
+        _sendResponse(res, null, 'File Not Found', 404);
+      } else {
+        _sendResponse(res, req.url, data, 200);
       }
     });
   } else {
-    res.writeHead(404, headers);
-    res.end();
+    _sendResponse(res, null, 'File Not Found', 404);
   }
   // Write some code here that helps serve up your static files!
   // (Static files are things like html (yours or archived from others...),
   // css, or anything that doesn't change often.)
 };
 
+var _sendResponse = function(res, url, data, status) {
+  data = data || '';
+  headers['Content-Type'] = _parseContentType(url);
+  res.writeHead(status, headers);
+  res.end(data);
+};
 
+var _parseContentType = function(url) {
+  var fileExtension = url.substr(url.lastIndexOf('.') + 1);
+  if (fileExtension === 'js') {
+    return 'application/js';
+  } else if (fileExtension === 'css') {
+    return 'text/css';
+  } else if (fileExtension === 'html') {
+    return  'text/html';
+  } else {
+    return 'text';
+  }
+};
 
 // As you progress, keep thinking about what helper functions you can put here!
