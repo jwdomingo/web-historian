@@ -1,6 +1,13 @@
 var http = require("http");
 var handler = require("./request-handler");
 var initialize = require("./initialize.js");
+var sys = require('sys');
+var exec = require('child_process').exec;
+
+
+exec(__dirname + "/../workers/./runCron", function (error, stdout, stderr) { 
+  sys.puts(stdout);
+});
 
 // Why do you think we have this here?
 // HINT: It has to do with what's in .gitignore

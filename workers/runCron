@@ -1,0 +1,1 @@
+echo "* * * * * /Users/student/Desktop/2016-01-web-historian/workers/./htmlfetcher.js" | crontab - 
