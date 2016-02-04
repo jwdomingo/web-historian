@@ -45,14 +45,25 @@ input#webhistorian-input {
   border: 1px solid #d9d9d9;
   font-size: 1.2em;
   font-family: arial, sans-serif;
+  background-image: url('webhistorian.png');
+  background-repeat: no-repeat;
+  background-size: auto 30px;
+  -webkit-filter: grayscale(100%);
+  background-position: 535px;
+  transition: -webkit-filter 500ms ease-in;
 }
 
 input#webhistorian-input:hover {
   border-color: #b9b9b9;
+  -webkit-filter: grayscale(0);
+  transition: -webkit-filter 500ms ease-in;
 }
 
 input#webhistorian-input:active, input#webhistorian-input:focus {
-  border-color: #4d90fe;
+  border-color: #218ecc;
+  outline: none;
+  -webkit-filter: grayscale(0);
+  transition: -webkit-filter 500ms ease-in;
 }
 
 p#webhistorian-p {
