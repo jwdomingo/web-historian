@@ -1,3 +1,4 @@
+var http = require('http');
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
@@ -25,7 +26,16 @@ exports.initialize = function(pathsObj) {
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports.readListOfUrls = function() {
+exports.updateSiteDiffs = function() {
+  fs.readFile(__dirname + '/../web/archives/sites.txt', 'utf-8', function(err, data) {
+    if (err) {
+      console.error(err);
+    } else {
+      data.split(',').forEach(function(site) {
+        _isUrlArchived(site);
+      });    
+    }
+  });
 };
 
 exports.isUrlInList = function() {
@@ -34,8 +44,37 @@ exports.isUrlInList = function() {
 exports.addUrlToList = function() {
 };
 
-exports.isUrlArchived = function() {
+var _isUrlArchived = function(site) {
+  fs.readdir(__dirname + '/../web/archives/sites', function(err, domains) {
+    if (err) {
+      console.error(err);
+    } else if (domains.indexOf(site) === -1) {
+      _downloadUrls(site);
+    }
+  });
 };
 
-exports.downloadUrls = function() {
+var _downloadUrls = function(site) {
+  var options = {
+    host: site,
+    port: 80,
+    path: '/index.html'
+  };
+
+  var buffer = '';
+  http.get(options, function(response){
+    response.on('data', function(chunk){
+      buffer += chunk.toString();
+    });
+
+    response.on('end', function() {
+      fs.writeFile(__dirname + '/../web/archives/sites/' + site, buffer, function(err) {
+        if (err) {
+          console.error(err);
+        }
+      });
+    });
+  }).on('error', function(err){
+    console.error(err);
+  });
 };
